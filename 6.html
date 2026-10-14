@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glory English Academy - Interactive Worksheet & Instant Feedback</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Fredoka & Tajawal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --font-en: 'Fredoka', cursive, sans-serif;
+      --font-ar: 'Tajawal', sans-serif;
+    }
+
+    body {
+      font-family: var(--font-ar);
+      background-color: #f1f5f9;
+      background-image: 
+        radial-gradient(#cbd5e1 1.2px, transparent 1.2px), 
+        radial-gradient(#fde68a 1.2px, #f1f5f9 1.2px);
+      background-size: 26px 26px;
+      background-position: 0 0, 13px 13px;
+      min-height: 100vh;
+      color: #1e293b;
+    }
+
+    .font-english {
+      font-family: var(--font-en);
+    }
+
+    /* Hand-Drawn Animated Circles */
+    .hand-drawn-circle-correct {
+      position: relative;
+      z-index: 10;
+    }
+    .hand-drawn-circle-correct::after {
+      content: '';
+      position: absolute;
+      inset: -5px -9px;
+      border: 3.5px solid #16a34a; /* Emerald green marker */
+      border-radius: 54% 46% 51% 49% / 46% 54% 46% 54%;
+      transform: rotate(-3deg);
+      pointer-events: none;
+      animation: drawCircleAnim 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      box-shadow: 0 0 14px rgba(22, 163, 74, 0.55);
+    }
+
+    .hand-drawn-circle-wrong {
+      position: relative;
+      z-index: 10;
+    }
+    .hand-drawn-circle-wrong::after {
+      content: '';
+      position: absolute;
+      inset: -5px -9px;
+      border: 3.5px dashed #dc2626; /* Crimson red dashed */
+      border-radius: 50% 50% 48% 52% / 52% 48% 50% 50%;
+      transform: rotate(2deg);
+      pointer-events: none;
+      animation: drawCircleAnim 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      box-shadow: 0 0 14px rgba(220, 38, 38, 0.45);
+    }
+
+    @keyframes drawCircleAnim {
+      0% { transform: rotate(-15deg) scale(0.6); opacity: 0; }
+      100% { transform: rotate(-3deg) scale(1); opacity: 1; }
+    }
+
+    /* Shake animation on wrong answer */
+    @keyframes shakeCard {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-7px); }
+      40%, 80% { transform: translateX(7px); }
+    }
+    .animate-shake {
+      animation: shakeCard 0.45s ease-in-out;
+    }
+
+    /* Bounce on success */
+    @keyframes successBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.025); }
+    }
+    .animate-success {
+      animation: successBounce 0.35s ease-in-out;
+    }
+
+    /* Synchronized Karaoke Glowing */
+    .sync-active-highlight {
+      box-shadow: 0 0 0 4px #f59e0b, 0 14px 28px -4px rgba(245, 158, 11, 0.45) !important;
+      transform: scale(1.015) translateY(-2px) !important;
+      background-color: #fffbeb !important;
+      transition: all 0.25s ease-in-out;
+    }
+
+    /* Animated Sound Equalizer Waves */
+    .eq-wave-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      height: 16px;
+    }
+    .eq-bar {
+      width: 3px;
+      border-radius: 9999px;
+      animation: eqBounce 0.65s ease-in-out infinite;
+    }
+    .eq-bar:nth-child(1) { height: 6px; background-color: #0284c7; animation-delay: 0.1s; }
+    .eq-bar:nth-child(2) { height: 16px; background-color: #f59e0b; animation-delay: 0.3s; }
+    .eq-bar:nth-child(3) { height: 9px; background-color: #10b981; animation-delay: 0.2s; }
+
+    @keyframes eqBounce {
+      0%, 100% { height: 4px; }
+      50% { height: 16px; }
+    }
+
+    /* Decorative Floating Badges */
+    .sticker-float {
+      animation: floatSticker 5s ease-in-out infinite alternate;
+    }
+    @keyframes floatSticker {
+      0% { transform: translateY(0px) rotate(0deg); }
+      100% { transform: translateY(-7px) rotate(4deg); }
+    }
+
+    /* 3D Balloon Digit Styling */
+    .balloon-digit {
+      font-family: var(--font-en);
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-shadow: 2px 3px 0px rgba(0,0,0,0.12);
+      transition: transform 0.2s;
+    }
+    .balloon-digit:hover {
+      transform: scale(1.05);
+    }
+
+    /* Matching Game Classes */
+    .match-item {
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+    .match-item:hover {
+      transform: translateY(-2px);
+    }
+    .match-selected {
+      box-shadow: 0 0 0 3.5px #3b82f6 !important;
+      background-color: #eff6ff !important;
+    }
+    .match-paired {
+      box-shadow: 0 0 0 3.5px #10b981 !important;
+      background-color: #ecfdf5 !important;
+      pointer-events: none;
+    }
+
+    @media print {
+      body { background: white !important; padding: 0 !important; }
+      .no-print { display: none !important; }
+      #worksheetSheet { box-shadow: none !important; border-width: 1px !important; margin: 0 !important; max-width: 100% !important; }
+    }
+  </style>
+</head>
+<body class="p-2 sm:p-5 lg:p-7 antialiased flex flex-col items-center">
+
+  <!-- TOP APP TOOLBAR -->
+  <header class="no-print w-full max-w-4xl bg-white/95 backdrop-blur-md rounded-2xl p-4 mb-5 shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 text-white flex items-center justify-center text-2xl font-black shadow-md shrink-0">
+        🎯
+      </div>
+      <div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <h1 class="font-extrabold text-slate-800 text-base sm:text-lg">ورقة العمل التفاعلية - استجابة فورية (صحيحة / خاطئة)</h1>
+          <span class="text-xs font-black bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
+            <span>⚡</span> تصحيح فوري مباشر
+          </span>
+          <span class="text-xs font-bold bg-purple-100 text-purple-900 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+            <span>🇬🇧</span> لكنة بريطانية أنثوية
+          </span>
+        </div>
+        <p class="text-xs text-slate-500 font-semibold mt-0.5">انقر على أي خيار وسيعطيك التطبيق استجابة فورية مرئية وصوتية (إجابة صحيحة ✅ أو خاطئة ❌) مع التزامن</p>
+      </div>
+    </div>
+
+    <!-- Live Master Score & Controls -->
+    <div class="flex items-center flex-wrap gap-2">
+      <!-- Live Score Badge -->
+      <div class="px-4 py-2 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-xl text-xs font-black text-amber-900 flex items-center gap-1.5 shadow-xs">
+        <span>⭐</span>
+        <span id="liveScoreCounter">الدرجة: 0 / 18</span>
+      </div>
+
+      <!-- Read All sequentially -->
+      <button onclick="readAllWorksheet()" id="readAllBtn" class="px-3.5 py-2 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white rounded-xl text-xs font-black shadow-sm transition flex items-center gap-1.5 active:scale-95">
+        <span>▶️</span>
+        <span>قراءة شاملة</span>
+      </button>
+
+      <!-- Voice Speed Toggle -->
+      <button onclick="toggleSpeed()" id="speedBtn" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1 active:scale-95">
+        <span>⚡</span>
+        <span id="speedLabel">السرعة: عادية</span>
+      </button>
+
+      <!-- Reset -->
+      <button onclick="resetWorksheet()" class="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-black transition flex items-center gap-1 active:scale-95" title="إعادة تعيين الورقة بالكامل">
+        <span>🔄</span>
+        <span>إعادة المحاولة</span>
+      </button>
+
+      <!-- Print -->
+      <button onclick="window.print()" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition" title="طباعة ورقة العمل">
+        🖨️
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSHEET CONTAINER (MATCHING POSTER EXACTLY) -->
+  <main id="worksheetSheet" class="w-full max-w-4xl bg-white rounded-[36px] shadow-2xl p-5 sm:p-9 border-4 border-white/90 relative overflow-hidden transition-all">
+    
+    <!-- Decorative Stickers -->
+    <div class="absolute -top-3 left-3 w-16 h-20 opacity-90 pointer-events-none sticker-float">
+      <svg viewBox="0 0 80 100" class="w-full h-full drop-shadow">
+        <rect x="15" y="10" width="55" height="75" rx="6" fill="#f97316"/>
+        <line x1="20" y1="20" x2="65" y2="20" stroke="#ffedd5" stroke-width="3" stroke-linecap="round"/>
+        <line x1="20" y1="35" x2="65" y2="35" stroke="#ffedd5" stroke-width="3" stroke-linecap="round"/>
+        <line x1="20" y1="50" x2="65" y2="50" stroke="#ffedd5" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="15" cy="22" r="4" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+        <circle cx="15" cy="38" r="4" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+        <circle cx="15" cy="54" r="4" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+        <circle cx="15" cy="70" r="4" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <!-- Blue Pencil on left -->
+    <div class="absolute top-28 left-2 w-8 h-20 opacity-80 pointer-events-none -rotate-45 hidden sm:block">
+      <svg viewBox="0 0 40 120" class="w-full h-full">
+        <path d="M10 20 L30 20 L30 90 L20 115 L10 90 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="3"/>
+        <polygon points="10,90 30,90 20,115" fill="#fef08a"/>
+        <polygon points="16,105 24,105 20,115" fill="#1e293b"/>
+      </svg>
+    </div>
+
+    <!-- Clock sticker middle-left -->
+    <div class="absolute top-[470px] left-3 w-12 h-12 opacity-85 pointer-events-none hidden sm:block">
+      <svg viewBox="0 0 60 60" class="w-full h-full drop-shadow">
+        <circle cx="30" cy="30" r="22" fill="#ffffff" stroke="#0284c7" stroke-width="4"/>
+        <circle cx="30" cy="30" r="2" fill="#0284c7"/>
+        <line x1="30" y1="30" x2="30" y2="18" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
+        <line x1="30" y1="30" x2="38" y2="30" stroke="#f43f5e" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="17" cy="14" r="5" fill="#38bdf8"/>
+        <circle cx="43" cy="14" r="5" fill="#38bdf8"/>
+      </svg>
+    </div>
+
+    <!-- WORKSHEET TOP HEADER: Student Name, Date & Academy Logo -->
+    <div class="flex items-center justify-between gap-4 pb-5 border-b-2 border-dashed border-slate-200 relative">
+      <div class="flex-1 flex flex-wrap items-center gap-4 sm:gap-8 font-english" dir="ltr">
+        <div class="flex items-center gap-2">
+          <span class="text-xl sm:text-2xl font-black text-slate-900 tracking-wide">Name:</span>
+          <input type="text" id="studentNameInput" placeholder="Write your name..." value="Super Student" 
+                 class="border-b-2 border-slate-400 focus:border-indigo-600 outline-none px-2 py-0.5 text-base sm:text-lg font-bold text-slate-800 bg-transparent w-44 sm:w-64 transition">
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="text-xl sm:text-2xl font-black text-slate-900 tracking-wide">Date:</span>
+          <input type="text" id="worksheetDateInput" value="2026 / 10 / 12" 
+                 class="border-b-2 border-slate-400 focus:border-indigo-600 outline-none px-2 py-0.5 text-base sm:text-lg font-bold text-slate-800 bg-transparent w-36 sm:w-44 transition">
+        </div>
+      </div>
+
+      <!-- Glory English Academy Circular Logo -->
+      <div class="shrink-0 flex flex-col items-center">
+        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-sky-400 bg-white p-1.5 shadow-md flex items-center justify-center relative cursor-pointer" onclick="testBritishVoice()" title="Glory English Academy">
+          <svg viewBox="0 0 140 140" class="w-full h-full">
+            <path id="curveTop" d="M 20 70 A 50 50 0 0 1 120 70" fill="transparent"/>
+            <path id="curveBottom" d="M 120 70 A 50 50 0 0 1 20 70" fill="transparent"/>
+            <text font-size="11" font-weight="900" fill="#0369a1" letter-spacing="2">
+              <textPath href="#curveTop" startOffset="50%" text-anchor="middle">
+                GLORY ENGLISH
+              </textPath>
+            </text>
+            <text font-size="10" font-weight="900" fill="#0369a1" letter-spacing="3">
+              <textPath href="#curveBottom" startOffset="50%" text-anchor="middle">
+                ACADEMY
+              </textPath>
+            </text>
+            <circle cx="70" cy="70" r="32" fill="#e0f2fe"/>
+            <path d="M48 76 Q60 68 70 73 Q80 68 92 76 L92 65 Q80 58 70 63 Q60 58 48 65 Z" fill="#0284c7"/>
+            <path d="M70 63 L70 73" stroke="#ffffff" stroke-width="1.5"/>
+            <path d="M70 60 Q75 46 88 48 Q78 52 74 61 Z" fill="#0369a1"/>
+            <path d="M70 60 Q65 46 52 48 Q62 52 66 61 Z" fill="#38bdf8"/>
+            <circle cx="70" cy="46" r="3.5" fill="#f59e0b"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= SECTION 1: CHOOSE THE CORRECT ANSWER (Blue Box) ================= -->
+    <section class="mt-6 rounded-[28px] border-4 border-[#0284c7] p-4 sm:p-6 bg-white relative shadow-sm" dir="ltr">
+      
+      <!-- Section Title & Instructions -->
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-sky-100 flex-wrap gap-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-[#f97316] text-white font-english font-black flex items-center justify-center text-lg shadow-sm">
+            1)
+          </div>
+          <h2 class="font-english text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            Choose the correct answer
+          </h2>
+          <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 text-white font-black flex items-center justify-center text-base shadow">
+            ?
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs font-bold text-sky-800 bg-sky-50 px-3 py-1.5 rounded-xl border border-sky-200">
+          <span>⭕</span>
+          <span dir="rtl">اضغط على الكلمة الصحيحة ليتم وضع دائرة حولها وتأكيد إجابتك فوراً مع النطق</span>
+        </div>
+      </div>
+
+      <!-- Live Section 1 Score Status -->
+      <div class="flex items-center justify-between bg-sky-50/70 p-3 rounded-2xl border border-sky-200 mb-4 text-xs font-bold">
+        <div class="flex items-center gap-2 text-sky-900">
+          <span>📊</span>
+          <span id="sec1ScoreLabel" dir="rtl">تمت الإجابة: 0 من 8 أسئلة (النقاط: 0/8)</span>
+        </div>
+        <div class="text-slate-500" dir="rtl">
+          <span>استجابة صوتية ومرئية فورية فور النقر ⚡</span>
+        </div>
+      </div>
+
+      <!-- 8 Multiple Choice Question Items -->
+      <div class="space-y-3.5 font-english" id="section1Container">
+        <!-- Dynamically injected with full instant response -->
+      </div>
+    </section>
+
+    <!-- ================= SECTION 2: MATCH (Orange / Brown Box) ================= -->
+    <section class="mt-7 rounded-[28px] border-4 border-[#ea580c] p-4 sm:p-6 bg-white relative shadow-sm" dir="ltr">
+      
+      <div class="flex items-center justify-between pb-3 mb-3 border-b border-orange-100 flex-wrap gap-2">
+        <div class="flex items-center gap-2.5">
+          <h2 class="font-english text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            Match
+          </h2>
+          <span class="text-2xl">🤝</span>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs font-bold text-orange-800 bg-orange-50 px-3 py-1 rounded-xl border border-orange-200">
+          <span>🔗</span>
+          <span dir="rtl">انقر على الكلمة ثم انقر على الرقم المقابل لها للتحقق الفوري</span>
+        </div>
+      </div>
+
+      <!-- Match Columns Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center my-2">
+        <!-- Left Side: 5 Written Numbers -->
+        <div class="md:col-span-7 space-y-2.5" id="matchWordsContainer"></div>
+        <!-- Middle Separator -->
+        <div class="hidden md:flex md:col-span-1 justify-center items-center">
+          <div class="h-44 w-0.5 bg-dashed border-r-2 border-dashed border-orange-200"></div>
+        </div>
+        <!-- Right Side: 5 Digits -->
+        <div class="md:col-span-4 space-y-2.5" id="matchDigitsContainer"></div>
+      </div>
+
+      <div class="mt-4 pt-2 border-t border-orange-100 flex items-center justify-between text-xs font-bold text-slate-500">
+        <span id="matchScoreNotice" dir="rtl">تم توصيل: 0 من 5 أزواج</span>
+        <button onclick="resetMatchGame()" class="text-xs bg-orange-100 hover:bg-orange-200 text-orange-800 px-3 py-1 rounded-lg transition active:scale-95">
+          إعادة التوصيل 🔄
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ================= SECTION 3: WRITE THE NUMBERS IN WORDS (Green Box) ================= -->
+    <section class="mt-7 rounded-[28px] border-4 border-[#16a34a] p-4 sm:p-6 bg-white relative shadow-sm" dir="ltr">
+      
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-green-100 flex-wrap gap-2">
+        <div class="flex items-center gap-2.5">
+          <h2 class="font-english text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            Write the numbers in words
+          </h2>
+          <div class="w-8 h-8 rounded-lg bg-green-100 text-green-800 flex items-center justify-center text-lg border border-green-300">
+            📝
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200">
+          <span>✍️</span>
+          <span dir="rtl">اكتب الأرقام ثم اضغط على زر التحقق الفوري [ ✓ تحقق ]</span>
+        </div>
+      </div>
+
+      <!-- 5 Stylized Numbers List -->
+      <div class="space-y-4 font-english" id="section3Container"></div>
+
+      <!-- Word Bank -->
+      <div class="mt-5 p-3.5 bg-emerald-50/70 rounded-2xl border border-emerald-200">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-black text-emerald-900 flex items-center gap-1">
+            <span>🔤</span> Word Bank (بنك الكلمات المساعدة)
+          </span>
+          <span class="text-[11px] text-emerald-700 font-semibold" dir="rtl">انقر على أي كلمة لإضافتها للحقل النشط</span>
+        </div>
+        <div class="flex flex-wrap gap-1.5" id="wordBankChips"></div>
+      </div>
+
+    </section>
+
+    <!-- ================= BOTTOM DECORATIVE MASCOTS ================= -->
+    <div class="flex items-end justify-between pt-6 mt-6 border-t-2 border-slate-100 relative">
+      <!-- Left Mascot: Studying girl -->
+      <div class="flex items-end gap-2">
+        <div class="w-20 h-24 sm:w-28 sm:h-32 shrink-0 cursor-pointer hover:scale-105 transition" onclick="sfx.playCheer(); fireConfetti(0.4)" title="أحسنت!">
+          <svg viewBox="0 0 120 130" class="w-full h-full drop-shadow">
+            <rect x="15" y="88" width="90" height="12" rx="3" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>
+            <line x1="25" y1="100" x2="25" y2="128" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+            <line x1="95" y1="100" x2="95" y2="128" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+            <polygon points="35,88 60,82 85,88 80,95 60,90 40,95" fill="#f8fafc" stroke="#38bdf8" stroke-width="2"/>
+            <path d="M42 65 Q60 58 78 65 L84 88 L36 88 Z" fill="#2dd4bf" stroke="#0d9488" stroke-width="2"/>
+            <circle cx="45" cy="88" r="5" fill="#fed7aa"/>
+            <circle cx="75" cy="88" r="5" fill="#fed7aa"/>
+            <circle cx="60" cy="40" r="22" fill="#fed7aa"/>
+            <ellipse cx="38" cy="42" rx="7" ry="12" fill="#92400e"/>
+            <ellipse cx="82" cy="42" rx="7" ry="12" fill="#92400e"/>
+            <circle cx="38" cy="34" r="4" fill="#f43f5e"/>
+            <circle cx="82" cy="34" r="4" fill="#f43f5e"/>
+            <path d="M38 38 C38 16, 82 16, 82 38 C75 28, 66 26, 60 28 C52 26, 44 28, 38 38 Z" fill="#92400e"/>
+            <circle cx="53" cy="41" r="3" fill="#1e293b"/>
+            <circle cx="67" cy="41" r="3" fill="#1e293b"/>
+            <path d="M57 49 Q60 53 63 49" stroke="#b45309" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="48" cy="45" r="3" fill="#fda4af"/>
+            <circle cx="72" cy="45" r="3" fill="#fda4af"/>
+          </svg>
+        </div>
+        <div class="hidden sm:block text-xs font-extrabold text-teal-800 bg-teal-50 px-3 py-1 rounded-xl border border-teal-200">
+          <span>🌟</span> أحسنت التركيز والمذاكرة!
+        </div>
+      </div>
+
+      <!-- Stationery Stickers -->
+      <div class="flex items-center gap-2 sm:gap-4 opacity-90">
+        <div class="w-12 h-12 hidden sm:block">
+          <svg viewBox="0 0 60 60" class="w-full h-full">
+            <rect x="8" y="14" width="44" height="40" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
+            <path d="M8 14 L52 14 L52 24 L8 24 Z" fill="#38bdf8"/>
+            <circle cx="16" cy="12" r="2.5" fill="#0284c7"/>
+            <circle cx="44" cy="12" r="2.5" fill="#0284c7"/>
+            <rect x="14" y="28" width="6" height="5" rx="1" fill="#cbd5e1"/>
+            <rect x="24" y="28" width="6" height="5" rx="1" fill="#cbd5e1"/>
+            <rect x="34" y="28" width="6" height="5" rx="1" fill="#cbd5e1"/>
+            <rect x="14" y="38" width="6" height="5" rx="1" fill="#cbd5e1"/>
+            <rect x="24" y="38" width="6" height="5" rx="1" fill="#f43f5e"/>
+            <rect x="34" y="38" width="6" height="5" rx="1" fill="#cbd5e1"/>
+          </svg>
+        </div>
+        <span class="text-2xl text-amber-400 sticker-float">⭐</span>
+      </div>
+
+      <!-- Right Mascot: Girl raising hand -->
+      <div class="flex items-end gap-2">
+        <div class="hidden sm:block text-xs font-extrabold text-pink-800 bg-pink-50 px-3 py-1 rounded-xl border border-pink-200">
+          <span>🙋‍♀️</span> أنا أعرف الإجابة الصحيحة!
+        </div>
+        <div class="w-20 h-24 sm:w-28 sm:h-32 shrink-0 cursor-pointer hover:scale-105 transition" onclick="sfx.playCheer(); fireConfetti(0.4)" title="ممتاز!">
+          <svg viewBox="0 0 120 130" class="w-full h-full drop-shadow">
+            <line x1="75" y1="65" x2="96" y2="35" stroke="#fed7aa" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="98" cy="32" r="5" fill="#fed7aa"/>
+            <polygon points="98,28 102,22 106,30" fill="#fde047"/>
+            <rect x="15" y="88" width="90" height="12" rx="3" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>
+            <line x1="25" y1="100" x2="25" y2="128" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+            <line x1="95" y1="100" x2="95" y2="128" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+            <path d="M42 65 Q60 58 78 65 L84 88 L36 88 Z" fill="#f472b6" stroke="#db2777" stroke-width="2"/>
+            <circle cx="60" cy="40" r="22" fill="#fed7aa"/>
+            <path d="M38 38 C38 16, 82 16, 82 38 C75 28, 66 26, 60 28 C52 26, 44 28, 38 38 Z" fill="#78350f"/>
+            <ellipse cx="38" cy="42" rx="6" ry="11" fill="#78350f"/>
+            <ellipse cx="82" cy="42" rx="6" ry="11" fill="#78350f"/>
+            <circle cx="53" cy="41" r="3" fill="#1e293b"/>
+            <circle cx="67" cy="41" r="3" fill="#1e293b"/>
+            <path d="M57 49 Q60 54 63 49" stroke="#b45309" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="48" cy="45" r="3" fill="#fda4af"/>
+            <circle cx="72" cy="45" r="3" fill="#fda4af"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FLOATING TOAST -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 transform translate-y-28 opacity-0 transition-all duration-300 z-50 bg-slate-900/95 backdrop-blur-md text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-white/20 pointer-events-none" dir="ltr">
+    <span id="toastIcon" class="text-2xl">✨</span>
+    <div>
+      <div id="toastTitle" class="font-english font-extrabold text-sm text-amber-300">Glory English Academy</div>
+      <div id="toastMsg" class="font-semibold text-xs text-slate-200">Interactive Worksheet Ready!</div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    /* =========================================================================
+       SECTION DATA (EXACT TO ORIGINAL POSTER)
+       ========================================================================= */
+
+    const SECTION_1_DATA = [
+      {
+        id: 1,
+        fullText: "We have 12 months in the year.",
+        prefix: "1) We have 12",
+        suffix: "in the year.",
+        opts: ["late", "months"],
+        correct: "months",
+        ar: "لدينا 12 شهراً في السنة.",
+        colors: ["#ea580c", "#0284c7"] // late: orange, months: blue
+      },
+      {
+        id: 2,
+        fullText: "I have school tomorrow so I have to get up early.",
+        prefix: "2) I have school tomorrow so I have to get up",
+        suffix: "",
+        opts: ["early", "ago"],
+        correct: "early",
+        ar: "لدي مدرسة غداً، لذا يجب أن أستيقظ مبكراً.",
+        colors: ["#ea580c", "#0284c7"] // early: orange, ago: blue
+      },
+      {
+        id: 3,
+        fullText: "I marked my birthday on the calendar.",
+        prefix: "3) I marked my birthday on the",
+        suffix: "",
+        opts: ["calendar", "How long"],
+        correct: "calendar",
+        ar: "حددت يوم ميلادي على التقويم.",
+        colors: ["#ea580c", "#0284c7"]
+      },
+      {
+        id: 4,
+        fullText: "You are late.",
+        prefix: "4) You are",
+        suffix: "",
+        opts: ["date", "late"],
+        correct: "late",
+        ar: "أنت متأخر.",
+        colors: ["#ea580c", "#0284c7"]
+      },
+      {
+        id: 5,
+        fullText: "What is the date today?",
+        prefix: "5) What is the",
+        suffix: "today?",
+        opts: ["calendar", "date"],
+        correct: "date",
+        ar: "ما هو تاريخ اليوم؟",
+        colors: ["#ea580c", "#0284c7"]
+      },
+      {
+        id: 6,
+        fullText: "How long is your journey to school?",
+        prefix: "6) How",
+        suffix: "is your journey to school?",
+        opts: ["long", "ago"],
+        correct: "long",
+        ar: "كم تستغرق رحلتك إلى المدرسة؟",
+        colors: ["#ea580c", "#0284c7"]
+      },
+      {
+        id: 7,
+        fullText: "I was in Abha 3 months ago.",
+        prefix: "7) I was in Abha 3 months",
+        suffix: "",
+        opts: ["date", "ago"],
+        correct: "ago",
+        ar: "كنت في مدينة أبها منذ 3 أشهر.",
+        colors: ["#ea580c", "#0284c7"]
+      },
+      {
+        id: 8,
+        fullText: "What time does your school start ?",
+        prefix: "8) What",
+        suffix: "does your school start ?",
+        opts: ["time", "calendar"],
+        correct: "time",
+        ar: "في أي وقت تبدأ مدرستك؟",
+        colors: ["#ea580c", "#0284c7"]
+      }
+    ];
+
+    const MATCH_DATA = [
+      { id: 'm1', word: "three hundred fifty one.", targetNum: 351, ar: "ثلاثمائة وواحد وخمسون" },
+      { id: 'm2', word: "One thousand.", targetNum: 1000, ar: "ألف" },
+      { id: 'm3', word: "Nine hundred seventy five.", targetNum: 975, ar: "تسعمائة وخمسة وسبعون" },
+      { id: 'm4', word: "eight hundred sixty eight.", targetNum: 868, ar: "ثمانمائة وثمانية وستون" },
+      { id: 'm5', word: "Two hundred one.", targetNum: 201, ar: "مئتان وواحد" }
+    ];
+
+    const MATCH_DIGITS = [
+      { num: 1000, color: "#6b21a8", bg: "#f3e8ff" },
+      { num: 201, color: "#15803d", bg: "#dcfce7" },
+      { num: 351, color: "#c2410c", bg: "#ffedd5" },
+      { num: 868, color: "#a21caf", bg: "#fdf4ff" },
+      { num: 975, color: "#0369a1", bg: "#e0f2fe" }
+    ];
+
+    const SECTION_3_DATA = [
+      {
+        id: 's3_1',
+        digits: "864",
+        digitColors: ["#0284c7", "#ea580c", "#f97316"],
+        correctWords: "eight hundred sixty-four",
+        altWords: "eight hundred sixty four",
+        ar: "ثمانمائة وأربعة وستون (864)"
+      },
+      {
+        id: 's3_2',
+        digits: "325",
+        digitColors: ["#ea580c", "#10b981", "#059669"],
+        correctWords: "three hundred twenty-five",
+        altWords: "three hundred twenty five",
+        ar: "ثلاثمائة وخمسة وعشرون (325)"
+      },
+      {
+        id: 's3_3',
+        digits: "670",
+        digitColors: ["#6366f1", "#10b981", "#14b8a6"],
+        correctWords: "six hundred seventy",
+        altWords: "six hundred and seventy",
+        ar: "ستمائة وسبعون (670)"
+      },
+      {
+        id: 's3_4',
+        digits: "903",
+        digitColors: ["#8b5cf6", "#0284c7", "#06b6d4"],
+        correctWords: "nine hundred three",
+        altWords: "nine hundred and three",
+        ar: "تسعمائة وثلاثة (903)"
+      },
+      {
+        id: 's3_5',
+        digits: "127",
+        digitColors: ["#ef4444", "#f59e0b", "#10b981"],
+        correctWords: "one hundred twenty-seven",
+        altWords: "one hundred twenty seven",
+        ar: "مائة وسبعة وعشرون (127)"
+      }
+    ];
+
+    /* Synthesized Audio Effects */
+    class SoundFX {
+      constructor() { this.ctx = null; }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+      }
+      beep(freq, type = 'sine', duration = 0.12, gainVal = 0.15) {
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {}
+      }
+      playPop() { this.beep(520, 'sine', 0.08, 0.12); }
+      playSuccess() {
+        this.beep(523.25, 'triangle', 0.12, 0.25); // C5
+        setTimeout(() => this.beep(659.25, 'triangle', 0.14, 0.25), 90); // E5
+        setTimeout(() => this.beep(783.99, 'triangle', 0.2, 0.3), 180); // G5
+      }
+      playWrong() {
+        this.beep(293.66, 'sawtooth', 0.15, 0.2); // D4
+        setTimeout(() => this.beep(220.00, 'sawtooth', 0.22, 0.22), 120); // A3
+      }
+      playCheer() {
+        this.beep(440, 'triangle', 0.1, 0.18);
+        setTimeout(() => this.beep(554.37, 'triangle', 0.1, 0.2), 80);
+        setTimeout(() => this.beep(659.25, 'triangle', 0.3, 0.25), 160);
+      }
+    }
+    const sfx = new SoundFX();
+
+    /* British Female Speech Engine */
+    const speechEngine = {
+      voices: [],
+      rate: 0.88,
+      pitch: 1.05,
+      init() {
+        if ('speechSynthesis' in window) {
+          const load = () => { this.voices = window.speechSynthesis.getVoices(); };
+          load();
+          if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = load;
+          }
+        }
+      },
+      getBritishFemaleVoice() {
+        if (!this.voices || this.voices.length === 0) {
+          this.voices = window.speechSynthesis.getVoices();
+        }
+        const ukVoices = this.voices.filter(v =>
+          v.lang === 'en-GB' || v.lang === 'en_GB' || v.lang.toLowerCase().startsWith('en-gb')
+        );
+        const femaleNames = ['female', 'hazel', 'serena', 'susan', 'libby', 'fiona', 'kate', 'victoria', 'martha', 'alice', 'amy', 'clara'];
+        const ukFemale = ukVoices.find(v => femaleNames.some(fn => v.name.toLowerCase().includes(fn)));
+        if (ukFemale) return ukFemale;
+        const googleUk = ukVoices.find(v => v.name.includes('Google UK English Female'));
+        if (googleUk) return googleUk;
+        if (ukVoices.length > 0) return ukVoices[0];
+        return this.voices.find(v => v.lang.startsWith('en')) || null;
+      },
+      speak(text, onStartCallback, onEndCallback) {
+        if (!('speechSynthesis' in window)) {
+          if (onEndCallback) onEndCallback();
+          return;
+        }
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'en-GB';
+        utter.rate = this.rate;
+        utter.pitch = this.pitch;
+        const voice = this.getBritishFemaleVoice();
+        if (voice) utter.voice = voice;
+
+        utter.onstart = () => { if (onStartCallback) onStartCallback(); };
+        utter.onend = () => { if (onEndCallback) onEndCallback(); };
+        utter.onerror = () => { if (onEndCallback) onEndCallback(); };
+
+        window.speechSynthesis.speak(utter);
+      }
+    };
+
+    /* =========================================================================
+       SECTION 1: RENDERING WITH IMMEDIATE FEEDBACK (صحيحة أو خاطئة)
+       ========================================================================= */
+    const userAnswersSec1 = {}; // id -> { selectedWord, isCorrect }
+
+    function renderSection1() {
+      const container = document.getElementById('section1Container');
+      container.innerHTML = '';
+
+      SECTION_1_DATA.forEach(q => {
+        const itemRow = document.createElement('div');
+        itemRow.id = `sec1-row-${q.id}`;
+        itemRow.className = "p-3.5 sm:p-4 rounded-2xl border-2 border-slate-200 transition-all bg-white flex flex-col gap-2.5 shadow-sm";
+
+        // Sentence line with inline options exactly as poster
+        const topRow = document.createElement('div');
+        topRow.className = "flex items-center justify-between flex-wrap gap-3";
+
+        // Sentence text + blank
+        const textDiv = document.createElement('div');
+        textDiv.className = "flex items-center flex-wrap gap-2 text-base sm:text-lg font-extrabold text-slate-800";
+
+        const curAns = userAnswersSec1[q.id];
+        let blankContent = "...........";
+        let blankClass = "px-3 py-0.5 rounded-lg border-2 border-dashed border-sky-400 bg-sky-50 text-indigo-900 min-w-[75px] text-center inline-block transition-all shadow-inner font-english";
+
+        if (curAns) {
+          if (curAns.isCorrect) {
+            blankContent = `${curAns.selectedWord} ✓`;
+            blankClass = "px-3 py-0.5 rounded-lg border-2 border-emerald-500 bg-emerald-100 text-emerald-900 font-black min-w-[75px] text-center inline-block shadow-inner font-english animate-success";
+          } else {
+            blankContent = `${curAns.selectedWord} ✗`;
+            blankClass = "px-3 py-0.5 rounded-lg border-2 border-rose-500 bg-rose-100 text-rose-900 font-black min-w-[75px] text-center inline-block shadow-inner font-english";
+          }
+        }
+
+        textDiv.innerHTML = `
+          <span>${q.prefix}</span>
+          <span id="blank-${q.id}" class="${blankClass}">${blankContent}</span>
+          <span>${q.suffix}</span>
+        `;
+
+        // Interactive Options: ( late / months ) with Hand-Drawn Circles
+        const optsDiv = document.createElement('div');
+        optsDiv.className = "flex items-center gap-1.5 bg-slate-50/90 px-3 py-1.5 rounded-2xl border border-slate-200 shadow-xs";
+
+        // Determine circle classes
+        let btn0CircleClass = "";
+        let btn1CircleClass = "";
+        if (curAns) {
+          if (curAns.selectedWord === q.opts[0]) {
+            btn0CircleClass = curAns.isCorrect ? "hand-drawn-circle-correct" : "hand-drawn-circle-wrong";
+          } else if (curAns.selectedWord === q.opts[1]) {
+            btn1CircleClass = curAns.isCorrect ? "hand-drawn-circle-correct" : "hand-drawn-circle-wrong";
+          }
+        }
+
+        optsDiv.innerHTML = `
+          <span class="text-slate-400 font-black text-base select-none">(</span>
+          <button type="button" onclick="handleSec1Choice(${q.id}, '${q.opts[0]}', 0)" id="optBtn-${q.id}-0"
+                  class="relative px-3.5 py-1 rounded-full text-white font-english font-black text-sm transition-all transform active:scale-95 shadow-sm ${btn0CircleClass}"
+                  style="background-color: ${q.colors[0]};" title="اختر ${q.opts[0]}">
+            ${q.opts[0]}
+          </button>
+          <span class="text-slate-400 font-black text-base select-none">/</span>
+          <button type="button" onclick="handleSec1Choice(${q.id}, '${q.opts[1]}', 1)" id="optBtn-${q.id}-1"
+                  class="relative px-3.5 py-1 rounded-full text-white font-english font-black text-sm transition-all transform active:scale-95 shadow-sm ${btn1CircleClass}"
+                  style="background-color: ${q.colors[1]};" title="اختر ${q.opts[1]}">
+            ${q.opts[1]}
+          </button>
+          <span class="text-slate-400 font-black text-base select-none">)</span>
+        `;
+
+        // Sound button with equalizer
+        const actionWrap = document.createElement('div');
+        actionWrap.className = "flex items-center gap-2";
+        actionWrap.innerHTML = `
+          <div id="sec1-eq-${q.id}" class="eq-wave-box opacity-0 transition-opacity">
+            <span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span>
+          </div>
+          <button type="button" onclick="playSec1Audio(${q.id})" class="w-8 h-8 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-800 flex items-center justify-center text-sm transition shadow-sm active:scale-95" title="استمع للنطق البريطاني">
+            🔊
+          </button>
+        `;
+
+        topRow.appendChild(textDiv);
+        topRow.appendChild(optsDiv);
+        topRow.appendChild(actionWrap);
+        itemRow.appendChild(topRow);
+
+        // Arabic translation line
+        const arLabel = document.createElement('div');
+        arLabel.className = "text-xs font-bold text-slate-500 flex items-center gap-1.5 pt-1 border-t border-slate-100/90";
+        arLabel.dir = "rtl";
+        arLabel.innerHTML = `
+          <span class="text-amber-600 font-black">الترجمة:</span>
+          <span>${q.ar}</span>
+        `;
+        itemRow.appendChild(arLabel);
+
+        // IMMEDIATE FEEDBACK BANNER (استجابة فورية: صحيحة أو خاطئة)
+        const feedbackDiv = document.createElement('div');
+        feedbackDiv.id = `sec1-feedback-${q.id}`;
+        
+        if (curAns) {
+          if (curAns.isCorrect) {
+            feedbackDiv.className = "flex items-center justify-between p-2.5 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-800 text-xs font-black animate-success";
+            feedbackDiv.dir = "rtl";
+            feedbackDiv.innerHTML = `
+              <div class="flex items-center gap-2">
+                <span class="text-base">✅</span>
+                <span>إجابة صحيحة وممتازة! أحسنت يا بطل 🌟 (Correct Answer!)</span>
+              </div>
+              <span class="text-[11px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-lg">+1 نقطة</span>
+            `;
+          } else {
+            feedbackDiv.className = "flex items-center justify-between p-2.5 bg-rose-50 border border-rose-300 rounded-xl text-rose-800 text-xs font-black animate-shake";
+            feedbackDiv.dir = "rtl";
+            feedbackDiv.innerHTML = `
+              <div class="flex items-center gap-2">
+                <span class="text-base">❌</span>
+                <span>إجابة خاطئة! فكّر جيداً وحاول مجدداً (Incorrect Answer)</span>
+              </div>
+              <button onclick="retrySec1Question(${q.id})" class="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-black transition active:scale-95">
+                حاول ثانية 🔄
+              </button>
+            `;
+          }
+        } else {
+          feedbackDiv.className = "hidden";
+        }
+
+        itemRow.appendChild(feedbackDiv);
+        container.appendChild(itemRow);
+      });
+
+      updateMasterScore();
+    }
+
+    /* INSTANT EVALUATION UPON USER CLICK */
+    function handleSec1Choice(qId, selectedWord, optIndex) {
+      const q = SECTION_1_DATA.find(x => x.id === qId);
+      if (!q) return;
+
+      const isCorrect = (selectedWord.toLowerCase() === q.correct.toLowerCase());
+      userAnswersSec1[qId] = { selectedWord, isCorrect };
+
+      const row = document.getElementById(`sec1-row-${qId}`);
+      const btn0 = document.getElementById(`optBtn-${qId}-0`);
+      const btn1 = document.getElementById(`optBtn-${qId}-1`);
+      const blank = document.getElementById(`blank-${qId}`);
+      const feedback = document.getElementById(`sec1-feedback-${qId}`);
+
+      // Clear any prior classes
+      btn0.classList.remove('hand-drawn-circle-correct', 'hand-drawn-circle-wrong');
+      btn1.classList.remove('hand-drawn-circle-correct', 'hand-drawn-circle-wrong');
+      row.classList.remove('border-emerald-500', 'border-rose-400', 'bg-emerald-50/30', 'bg-rose-50/30', 'animate-shake', 'animate-success');
+
+      const clickedBtn = (optIndex === 0) ? btn0 : btn1;
+
+      if (isCorrect) {
+        // === CORRECT ANSWER RESPONSE ===
+        sfx.playSuccess();
+        fireConfetti(0.35);
+
+        // Draw Green Hand-Drawn Circle
+        clickedBtn.classList.add('hand-drawn-circle-correct');
+
+        // Style Row & Blank
+        row.classList.add('border-emerald-500', 'bg-emerald-50/30', 'animate-success');
+        blank.className = "px-3 py-0.5 rounded-lg border-2 border-emerald-500 bg-emerald-100 text-emerald-900 font-black min-w-[75px] text-center inline-block shadow-inner font-english";
+        blank.textContent = `${selectedWord} ✓`;
+
+        // Render Positive Feedback Box
+        feedback.className = "flex items-center justify-between p-2.5 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-800 text-xs font-black animate-success";
+        feedback.dir = "rtl";
+        feedback.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="text-base">✅</span>
+            <span>إجابة صحيحة وممتازة! أحسنت يا بطل 🌟 (Correct Answer!)</span>
+          </div>
+          <span class="text-[11px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-lg">+1 نقطة</span>
+        `;
+
+        showToast("إجابة صحيحة! 🎉", `رائع! الكلمة الصحيحة هي "${selectedWord}"`, "✅");
+
+        // British Voice Pronunciation of Full Sentence
+        playSec1Audio(qId);
+
+      } else {
+        // === WRONG ANSWER RESPONSE ===
+        sfx.playWrong();
+
+        // Draw Red Dashed Circle & Shake Row
+        clickedBtn.classList.add('hand-drawn-circle-wrong');
+        row.classList.add('border-rose-400', 'bg-rose-50/30', 'animate-shake');
+
+        blank.className = "px-3 py-0.5 rounded-lg border-2 border-rose-500 bg-rose-100 text-rose-900 font-black min-w-[75px] text-center inline-block shadow-inner font-english";
+        blank.textContent = `${selectedWord} ✗`;
+
+        // Render Wrong Feedback Box
+        feedback.className = "flex items-center justify-between p-2.5 bg-rose-50 border border-rose-300 rounded-xl text-rose-800 text-xs font-black animate-shake";
+        feedback.dir = "rtl";
+        feedback.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="text-base">❌</span>
+            <span>إجابة خاطئة! الكلمة "${selectedWord}" غير مناسبة، فكّر جيداً وحاول مجدداً</span>
+          </div>
+          <button onclick="retrySec1Question(${qId})" class="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-black transition active:scale-95 shadow-xs">
+            حاول ثانية 🔄
+          </button>
+        `;
+
+        showToast("إجابة خاطئة ❌", `حاول مرة أخرى لاختيار الكلمة المناسبة للجملة`, "⚠️");
+      }
+
+      updateMasterScore();
+    }
+
+    function retrySec1Question(qId) {
+      sfx.playPop();
+      delete userAnswersSec1[qId];
+
+      const row = document.getElementById(`sec1-row-${qId}`);
+      const btn0 = document.getElementById(`optBtn-${qId}-0`);
+      const btn1 = document.getElementById(`optBtn-${qId}-1`);
+      const blank = document.getElementById(`blank-${qId}`);
+      const feedback = document.getElementById(`sec1-feedback-${qId}`);
+
+      if (row) row.className = "p-3.5 sm:p-4 rounded-2xl border-2 border-slate-200 transition-all bg-white flex flex-col gap-2.5 shadow-sm";
+      if (btn0) btn0.classList.remove('hand-drawn-circle-correct', 'hand-drawn-circle-wrong');
+      if (btn1) btn1.classList.remove('hand-drawn-circle-correct', 'hand-drawn-circle-wrong');
+      if (blank) {
+        blank.className = "px-3 py-0.5 rounded-lg border-2 border-dashed border-sky-400 bg-sky-50 text-indigo-900 min-w-[75px] text-center inline-block transition-all shadow-inner font-english";
+        blank.textContent = "...........";
+      }
+      if (feedback) feedback.className = "hidden";
+
+      updateMasterScore();
+    }
+
+    function playSec1Audio(qId, onEnd) {
+      const q = SECTION_1_DATA.find(x => x.id === qId);
+      if (!q) return;
+
+      const row = document.getElementById(`sec1-row-${qId}`);
+      const eq = document.getElementById(`sec1-eq-${qId}`);
+
+      speechEngine.speak(q.fullText, () => {
+        if (row) row.classList.add('sync-active-highlight');
+        if (eq) eq.classList.remove('opacity-0');
+      }, () => {
+        if (row) row.classList.remove('sync-active-highlight');
+        if (eq) eq.classList.add('opacity-0');
+        if (onEnd) onEnd();
+      });
+    }
+
+    /* =========================================================================
+       SECTION 2: MATCHING GAME (WITH IMMEDIATE RESPONSE)
+       ========================================================================= */
+    let selectedMatchWordId = null;
+    let selectedMatchDigitNum = null;
+    let completedPairs = {};
+
+    function renderSection2() {
+      const wordsContainer = document.getElementById('matchWordsContainer');
+      const digitsContainer = document.getElementById('matchDigitsContainer');
+
+      wordsContainer.innerHTML = '';
+      digitsContainer.innerHTML = '';
+
+      MATCH_DATA.forEach((m, idx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.id = `match-word-${m.id}`;
+        itemDiv.className = "match-item p-3 bg-white rounded-2xl border-2 border-slate-200 hover:border-orange-400 flex items-center justify-between shadow-sm";
+        itemDiv.onclick = () => onSelectMatchWord(m.id);
+
+        itemDiv.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="w-6 h-6 rounded-full bg-orange-100 text-orange-800 text-xs font-black flex items-center justify-center shrink-0">
+              ${idx + 1}
+            </span>
+            <div>
+              <div id="match-text-${m.id}" class="font-english text-base sm:text-lg font-black text-slate-800">
+                ${m.word}
+              </div>
+              <div class="text-[11px] font-bold text-slate-400" dir="rtl">
+                ${m.ar}
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <div id="match-eq-${m.id}" class="eq-wave-box opacity-0 transition-opacity">
+              <span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span>
+            </div>
+            <button onclick="event.stopPropagation(); playMatchAudio('${m.id}')" class="w-8 h-8 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-700 flex items-center justify-center text-xs transition">
+              🔊
+            </button>
+          </div>
+        `;
+        wordsContainer.appendChild(itemDiv);
+      });
+
+      MATCH_DIGITS.forEach(d => {
+        const digDiv = document.createElement('div');
+        digDiv.id = `match-digit-${d.num}`;
+        digDiv.className = "match-item p-3 rounded-2xl border-2 border-slate-200 hover:border-orange-400 flex items-center gap-3 shadow-sm";
+        digDiv.style.backgroundColor = d.bg;
+        digDiv.onclick = () => onSelectMatchDigit(d.num);
+
+        digDiv.innerHTML = `
+          <span class="w-4 h-4 rounded-full shrink-0 shadow-sm" style="background-color: ${d.color};"></span>
+          <span class="font-english font-black text-2xl" style="color: ${d.color};">
+            ${d.num}
+          </span>
+          <span id="match-badge-${d.num}" class="text-xs font-black text-emerald-700 ml-auto hidden" dir="rtl">
+            ✓ متصل بنجاح
+          </span>
+        `;
+        digitsContainer.appendChild(digDiv);
+      });
+    }
+
+    function onSelectMatchWord(wordId) {
+      if (completedPairs[wordId]) return;
+      sfx.playPop();
+      selectedMatchWordId = wordId;
+
+      MATCH_DATA.forEach(m => {
+        const el = document.getElementById(`match-word-${m.id}`);
+        if (el && !completedPairs[m.id]) el.classList.remove('match-selected');
+      });
+      const cur = document.getElementById(`match-word-${wordId}`);
+      if (cur) cur.classList.add('match-selected');
+
+      playMatchAudio(wordId);
+      checkMatchAttempt();
+    }
+
+    function onSelectMatchDigit(digitNum) {
+      if (Object.values(completedPairs).includes(digitNum)) return;
+      sfx.playPop();
+      selectedMatchDigitNum = digitNum;
+
+      MATCH_DIGITS.forEach(d => {
+        const el = document.getElementById(`match-digit-${d.num}`);
+        if (el && !Object.values(completedPairs).includes(d.num)) el.classList.remove('match-selected');
+      });
+      const cur = document.getElementById(`match-digit-${digitNum}`);
+      if (cur) cur.classList.add('match-selected');
+
+      checkMatchAttempt();
+    }
+
+    function checkMatchAttempt() {
+      if (selectedMatchWordId !== null && selectedMatchDigitNum !== null) {
+        const wordObj = MATCH_DATA.find(x => x.id === selectedMatchWordId);
+        if (wordObj.targetNum === selectedMatchDigitNum) {
+          // Instant Correct Match Response
+          sfx.playSuccess();
+          completedPairs[selectedMatchWordId] = selectedMatchDigitNum;
+
+          const wEl = document.getElementById(`match-word-${selectedMatchWordId}`);
+          const dEl = document.getElementById(`match-digit-${selectedMatchDigitNum}`);
+          if (wEl) {
+            wEl.classList.remove('match-selected');
+            wEl.classList.add('match-paired');
+          }
+          if (dEl) {
+            dEl.classList.remove('match-selected');
+            dEl.classList.add('match-paired');
+            const badge = document.getElementById(`match-badge-${selectedMatchDigitNum}`);
+            if (badge) badge.classList.remove('hidden');
+          }
+
+          showToast("إجابة صحيحة! 🌟", `تم التوصيل الصحيح: ${wordObj.word} = ${selectedMatchDigitNum}`, "✅");
+
+          selectedMatchWordId = null;
+          selectedMatchDigitNum = null;
+          updateMatchScore();
+          updateMasterScore();
+        } else {
+          // Instant Wrong Match Response
+          sfx.playWrong();
+          const wEl = document.getElementById(`match-word-${selectedMatchWordId}`);
+          const dEl = document.getElementById(`match-digit-${selectedMatchDigitNum}`);
+          if (wEl) wEl.classList.add('ring-4', 'ring-rose-400', 'animate-shake');
+          if (dEl) dEl.classList.add('ring-4', 'ring-rose-400', 'animate-shake');
+
+          showToast("إجابة خاطئة! ❌", "هذا الرقم لا يطابق الكلمة المحددة، حاول مرة أخرى", "⚠️");
+
+          setTimeout(() => {
+            if (wEl) wEl.classList.remove('ring-4', 'ring-rose-400', 'match-selected', 'animate-shake');
+            if (dEl) dEl.classList.remove('ring-4', 'ring-rose-400', 'match-selected', 'animate-shake');
+            selectedMatchWordId = null;
+            selectedMatchDigitNum = null;
+          }, 600);
+        }
+      }
+    }
+
+    function updateMatchScore() {
+      const count = Object.keys(completedPairs).length;
+      document.getElementById('matchScoreNotice').textContent = `تم توصيل: ${count} من 5 أزواج`;
+      if (count === 5) {
+        fireConfetti(0.5);
+        showToast("ممتاز جداً!", "اكتمل توصيل جميع الأرقام بنجاح 🌟", "🏆");
+      }
+    }
+
+    function resetMatchGame() {
+      sfx.playPop();
+      completedPairs = {};
+      selectedMatchWordId = null;
+      selectedMatchDigitNum = null;
+      renderSection2();
+      updateMatchScore();
+      updateMasterScore();
+    }
+
+    function playMatchAudio(wordId, onEnd) {
+      const item = MATCH_DATA.find(x => x.id === wordId);
+      if (!item) return;
+
+      const card = document.getElementById(`match-word-${wordId}`);
+      const eq = document.getElementById(`match-eq-${wordId}`);
+
+      speechEngine.speak(item.word, () => {
+        if (card) card.classList.add('sync-active-highlight');
+        if (eq) eq.classList.remove('opacity-0');
+      }, () => {
+        if (card) card.classList.remove('sync-active-highlight');
+        if (eq) eq.classList.add('opacity-0');
+        if (onEnd) onEnd();
+      });
+    }
+
+    /* =========================================================================
+       SECTION 3: WRITE NUMBERS IN WORDS (WITH INSTANT VERIFICATION)
+       ========================================================================= */
+    const userAnswersSec3 = {};
+    let activeInputSec3Id = 'input-s3_1';
+
+    function renderSection3() {
+      const container = document.getElementById('section3Container');
+      container.innerHTML = '';
+
+      SECTION_3_DATA.forEach(item => {
+        const row = document.createElement('div');
+        row.id = `sec3-row-${item.id}`;
+        row.className = "p-3 sm:p-4 rounded-2xl bg-white border-2 border-slate-200 transition-all flex flex-col gap-2 shadow-sm";
+
+        const mainLine = document.createElement('div');
+        mainLine.className = "flex items-center flex-wrap gap-3 justify-between";
+
+        // Stylized 3D Balloon Digits
+        const digitsBox = document.createElement('div');
+        digitsBox.className = "flex items-center gap-1 cursor-pointer select-none";
+        digitsBox.onclick = () => playSec3Audio(item.id);
+
+        let digitsHtml = '';
+        item.digits.split('').forEach((d, i) => {
+          const col = item.digitColors[i] || '#0284c7';
+          digitsHtml += `<span class="balloon-digit text-3xl sm:text-4xl" style="color: ${col};">${d}</span>`;
+        });
+        digitsBox.innerHTML = digitsHtml;
+
+        // Input Field
+        const inputWrap = document.createElement('div');
+        inputWrap.className = "flex-1 min-w-[220px]";
+
+        const input = document.createElement('input');
+        input.type = "text";
+        input.id = `input-${item.id}`;
+        input.placeholder = "Write in words: e.g. " + item.correctWords;
+        input.value = userAnswersSec3[item.id] || '';
+        input.className = "w-full text-base sm:text-lg font-extrabold text-slate-800 border-b-2 border-dotted border-slate-400 focus:border-emerald-500 outline-none py-1 px-2 bg-transparent transition";
+        input.onfocus = () => { activeInputSec3Id = `input-${item.id}`; };
+        input.oninput = (e) => { userAnswersSec3[item.id] = e.target.value.trim(); };
+        input.onkeydown = (e) => { if (e.key === 'Enter') checkSingleSec3(item.id); };
+
+        inputWrap.appendChild(input);
+
+        // Instant Check Button & Audio
+        const actions = document.createElement('div');
+        actions.className = "flex items-center gap-2";
+        actions.innerHTML = `
+          <button onclick="checkSingleSec3('${item.id}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-xs transition active:scale-95 flex items-center gap-1">
+            <span>✓</span>
+            <span>تحقق</span>
+          </button>
+          <div id="sec3-eq-${item.id}" class="eq-wave-box opacity-0 transition-opacity">
+            <span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span>
+          </div>
+          <button onclick="playSec3Audio('${item.id}')" class="w-8 h-8 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-800 flex items-center justify-center text-xs transition shadow-sm active:scale-95" title="استمع للنطق">
+            🔊
+          </button>
+        `;
+
+        mainLine.appendChild(digitsBox);
+        mainLine.appendChild(inputWrap);
+        mainLine.appendChild(actions);
+        row.appendChild(mainLine);
+
+        // Instant Hint & Response line
+        const hintLine = document.createElement('div');
+        hintLine.className = "text-xs font-bold text-slate-500 flex items-center justify-between pt-1 border-t border-slate-100";
+        hintLine.innerHTML = `
+          <span dir="rtl"><strong class="text-emerald-700">المعنى:</strong> ${item.ar}</span>
+          <span id="sec3-feedback-${item.id}" class="font-extrabold text-xs hidden"></span>
+        `;
+        row.appendChild(hintLine);
+
+        container.appendChild(row);
+      });
+
+      renderWordBankChips();
+    }
+
+    function checkSingleSec3(itemId) {
+      const item = SECTION_3_DATA.find(x => x.id === itemId);
+      if (!item) return;
+
+      const userText = (document.getElementById(`input-${itemId}`)?.value || '').trim().toLowerCase();
+      const row = document.getElementById(`sec3-row-${itemId}`);
+      const feedback = document.getElementById(`sec3-feedback-${itemId}`);
+
+      const cleanUser = userText.replace(/-/g, ' ').replace(/\s+/g, ' ');
+      const cleanCorrect = item.correctWords.toLowerCase().replace(/-/g, ' ');
+      const cleanAlt = item.altWords.toLowerCase().replace(/-/g, ' ');
+
+      if (cleanUser && (cleanUser === cleanCorrect || cleanUser === cleanAlt)) {
+        sfx.playSuccess();
+        fireConfetti(0.3);
+        row.className = "p-3 sm:p-4 rounded-2xl bg-emerald-50/50 border-2 border-emerald-500 transition-all flex flex-col gap-2 shadow-sm animate-success";
+        feedback.className = "font-black text-emerald-700 block animate-fadeIn";
+        feedback.dir = "rtl";
+        feedback.textContent = "✅ إجابة صحيحة! أحسنت الكتابة";
+        showToast("إجابة صحيحة! 🌟", `كتابة دقيقة للرقم ${item.digits}`, "✅");
+        playSec3Audio(itemId);
+      } else {
+        sfx.playWrong();
+        row.className = "p-3 sm:p-4 rounded-2xl bg-rose-50/50 border-2 border-rose-400 transition-all flex flex-col gap-2 shadow-sm animate-shake";
+        feedback.className = "font-black text-rose-700 block animate-fadeIn";
+        feedback.dir = "rtl";
+        feedback.textContent = `❌ إجابة خاطئة! الحل الصحيح هو: ${item.correctWords}`;
+        showToast("إجابة خاطئة ❌", `راجع تهجئة الرقم وحاول مجدداً`, "⚠️");
+      }
+      updateMasterScore();
+    }
+
+    const WORD_BANK = [
+      "Eight", "hundred", "sixty-four",
+      "Three", "twenty-five",
+      "Six", "seventy",
+      "Nine", "three",
+      "One", "twenty-seven", "and"
+    ];
+
+    function renderWordBankChips() {
+      const container = document.getElementById('wordBankChips');
+      container.innerHTML = '';
+
+      WORD_BANK.forEach(word => {
+        const chip = document.createElement('button');
+        chip.className = "px-3 py-1 bg-white hover:bg-emerald-600 hover:text-white border border-emerald-300 rounded-xl text-xs font-black text-emerald-800 transition active:scale-95 shadow-xs font-english";
+        chip.textContent = word;
+        chip.onclick = () => {
+          sfx.playPop();
+          const targetInput = document.getElementById(activeInputSec3Id);
+          if (targetInput) {
+            targetInput.value = targetInput.value ? (targetInput.value + ' ' + word) : word;
+            const itemId = activeInputSec3Id.replace('input-', '');
+            userAnswersSec3[itemId] = targetInput.value;
+          }
+        };
+        container.appendChild(chip);
+      });
+    }
+
+    function playSec3Audio(itemId, onEnd) {
+      const item = SECTION_3_DATA.find(x => x.id === itemId);
+      if (!item) return;
+
+      const row = document.getElementById(`sec3-row-${itemId}`);
+      const eq = document.getElementById(`sec3-eq-${itemId}`);
+
+      speechEngine.speak(item.correctWords, () => {
+        if (row) row.classList.add('sync-active-highlight');
+        if (eq) eq.classList.remove('opacity-0');
+      }, () => {
+        if (row) row.classList.remove('sync-active-highlight');
+        if (eq) eq.classList.add('opacity-0');
+        if (onEnd) onEnd();
+      });
+    }
+
+    /* =========================================================================
+       MASTER LIVE SCORE & CONTROLS
+       ========================================================================= */
+
+    function updateMasterScore() {
+      // Sec 1 Correct answers
+      let sec1Correct = 0;
+      let sec1TotalAnswered = Object.keys(userAnswersSec1).length;
+      Object.values(userAnswersSec1).forEach(v => {
+        if (v.isCorrect) sec1Correct++;
+      });
+
+      document.getElementById('sec1ScoreLabel').textContent = 
+        `تمت الإجابة: ${sec1TotalAnswered} من 8 أسئلة (النقاط: ${sec1Correct}/8)`;
+
+      // Sec 2 Pairs
+      let sec2Correct = Object.keys(completedPairs).length;
+
+      // Sec 3 Correct
+      let sec3Correct = 0;
+      SECTION_3_DATA.forEach(item => {
+        const userText = (document.getElementById(`input-${item.id}`)?.value || '').trim().toLowerCase();
+        const cleanUser = userText.replace(/-/g, ' ').replace(/\s+/g, ' ');
+        const cleanCorrect = item.correctWords.toLowerCase().replace(/-/g, ' ');
+        const cleanAlt = item.altWords.toLowerCase().replace(/-/g, ' ');
+        if (cleanUser && (cleanUser === cleanCorrect || cleanUser === cleanAlt)) {
+          sec3Correct++;
+        }
+      });
+
+      const totalScore = sec1Correct + sec2Correct + sec3Correct;
+      document.getElementById('liveScoreCounter').textContent = `الدرجة: ${totalScore} / 18`;
+
+      if (sec1Correct === 8) {
+        showToast("إنجاز رائع! 🏆", "أجبت على جميع أسئلة الاختيار بشكل صحيح!", "🌟");
+      }
+    }
+
+    function resetWorksheet() {
+      sfx.playPop();
+      for (const k in userAnswersSec1) delete userAnswersSec1[k];
+      for (const k in userAnswersSec3) delete userAnswersSec3[k];
+      completedPairs = {};
+      selectedMatchWordId = null;
+      selectedMatchDigitNum = null;
+
+      renderSection1();
+      renderSection2();
+      renderSection3();
+      updateMatchScore();
+      updateMasterScore();
+
+      showToast("تمت إعادة التعيين", "يمكنك الآن البدء مجدداً والتحقق من إجاباتك 📝", "🔄");
+    }
+
+    /* Read All Sequentially */
+    let isAllReading = false;
+    function readAllWorksheet() {
+      if (isAllReading) return;
+      isAllReading = true;
+
+      const btn = document.getElementById('readAllBtn');
+      btn.disabled = true;
+      btn.classList.add('opacity-60');
+
+      showToast("قراءة ورقة العمل", "جاري قراءة الأسئلة بالترتيب مع التزامن الصوتي...", "▶️");
+
+      let currentStep = 0;
+      function nextStep() {
+        if (currentStep < 8) {
+          const q = SECTION_1_DATA[currentStep];
+          const row = document.getElementById(`sec1-row-${q.id}`);
+          if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          playSec1Audio(q.id, () => {
+            currentStep++;
+            setTimeout(nextStep, 350);
+          });
+        } else if (currentStep < 13) {
+          const m = MATCH_DATA[currentStep - 8];
+          const card = document.getElementById(`match-word-${m.id}`);
+          if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          playMatchAudio(m.id, () => {
+            currentStep++;
+            setTimeout(nextStep, 350);
+          });
+        } else if (currentStep < 18) {
+          const s = SECTION_3_DATA[currentStep - 13];
+          const row = document.getElementById(`sec3-row-${s.id}`);
+          if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          playSec3Audio(s.id, () => {
+            currentStep++;
+            setTimeout(nextStep, 350);
+          });
+        } else {
+          isAllReading = false;
+          btn.disabled = false;
+          btn.classList.remove('opacity-60');
+          fireConfetti(0.5);
+          showToast("Well Done!", "تمت قراءة ورقة العمل كاملة بنجاح 🇬🇧", "🎉");
+        }
+      }
+
+      nextStep();
+    }
+
+    function toggleSpeed() {
+      if (speechEngine.rate >= 0.85) {
+        speechEngine.rate = 0.7;
+        document.getElementById('speedLabel').textContent = "السرعة: بطيئة";
+        showToast("Voice Speed", "تم إبطاء سرعة النطق للمبتدئين 🐢", "⚡");
+      } else {
+        speechEngine.rate = 0.88;
+        document.getElementById('speedLabel').textContent = "السرعة: عادية";
+        showToast("Voice Speed", "السرعة عادية 🐇", "⚡");
+      }
+    }
+
+    function testBritishVoice() {
+      sfx.playPop();
+      speechEngine.speak("Welcome to Glory English Academy! Let's practise our exercises together.", () => {}, () => {});
+      showToast("British Accent", "لكنة بريطانية أنثوية فصيحة 🇬🇧", "🎙️");
+    }
+
+    function showToast(title, message, icon = "✨") {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastMsg').textContent = message;
+      document.getElementById('toastIcon').textContent = icon;
+
+      toast.classList.remove('translate-y-28', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      clearTimeout(toast._timeout);
+      toast._timeout = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-28', 'opacity-0');
+      }, 2400);
+    }
+
+    function fireConfetti(power = 0.5) {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: Math.floor(60 * power),
+          spread: 70,
+          origin: { y: 0.7 }
+        });
+      }
+    }
+
+    window.onload = function() {
+      speechEngine.init();
+      renderSection1();
+      renderSection2();
+      renderSection3();
+      setTimeout(() => {
+        showToast("Glory English Academy", "اختر إجابتك لمعرفة النتيجة فوراً (صحيحة أو خاطئة) 🎯", "🇬🇧");
+      }, 400);
+    };
+  </script>
+</body>
+</html>
